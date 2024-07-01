@@ -21,4 +21,18 @@ th, td {
 	padding: 5px;  
 } 
 
- 
+footer {   
+   position:fixed;
+   left:0px;
+   bottom:0px;
+   height:30px;
+   width:100%;
+   background-color: #c0c0c0;
+   color: black;
+   padding-left: 10px;
+}
+
+footer a {
+	color: black;
+}
+
