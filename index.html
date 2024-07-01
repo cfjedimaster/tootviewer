@@ -44,11 +44,11 @@
 			</div>
 		</sl-card>
 
-		<template x-if="messageData">
+		<template x-if="messageDataLoaded">
 			<div>
-				<h3>Message Archive</h3>
+				<h3>Message Archive (<span x-text="messages.length"></span> messages)</h3>
 				<p>
-				Your archive contains <span x-text="messageData.length"></span> messages.
+				<sl-input placeholder="Type to filter by text" x-model="textFilter"></sl-input>
 				</p>
 
 				<table id="messageTable">
@@ -59,7 +59,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<template x-for="message in messageData">
+						<template x-for="message in messages">
 							<tr>
 								<td x-text="dateFormat(message.published)" style="white-space: nowrap"></td>
 								<td x-html="message.object.content"></td>

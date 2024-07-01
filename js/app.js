@@ -5,7 +5,9 @@ document.addEventListener('alpine:init', () => {
 	actorDataLoaded:false,
 	actorData:{},
 	messageData:null,
+	messageDataLoaded:false,
 	formatter:null,
+	textFilter:'',
 	init() {
 		console.log('app init');
 		this.formatter = new Intl.DateTimeFormat('en-US', {dateStyle:'medium', timeStyle:'long'});
@@ -21,12 +23,17 @@ document.addEventListener('alpine:init', () => {
 		// repeat of logic below, but only 1 line, i'll deal for now
 		if(file.type !== 'application/zip' || !file.name.endsWith('.zip')) return;
 		this.loadZip(file);
-		//only work with file 1
-		/*
-		this.pdfFile = droppedFiles[0];
-		if(this.pdfFile.type !== 'application/pdf') return;
-		console.log('we got a pdf', this.pdfFile.name);
-		*/
+	},
+	get messages() {
+		if(!this.messageData) return [];
+		if(this.textFilter === '') return this.messageData;
+		
+		return this.messageData.filter(x => {
+			if(x.object && x.object.content) return x.object.content.toLowerCase().includes(this.textFilter.toLocaleLowerCase());
+			return true;
+		});
+		
+		//return this.messageData.filter(x => x?.object?.content.toLowerCase().includes(this.textFilter.toLocaleLowerCase()));
 	},
 	handleFile(e) {
 		/*
@@ -59,9 +66,15 @@ document.addEventListener('alpine:init', () => {
 		// read in actor and outbox for processing
 		this.actorData = JSON.parse((await zipContents.files['actor.json'].async('text')));	
 		this.actorDataLoaded = true;
-		console.log('test', JSON.stringify(this.actorData,null,'\t'));
+		//console.log('test', JSON.stringify(this.actorData,null,'\t'));
 
-		this.messageData = JSON.parse((await zipContents.files['outbox.json'].async('text'))).orderedItems;
+		/*
+		Filter out type=Announce as I don't think they are important here. But I may regret this.
+		Or I mave move them to another set of data
+		*/
+		this.messageData = JSON.parse((await zipContents.files['outbox.json'].async('text'))).orderedItems.filter(m => m.type === 'Create');
+
+		this.messageDataLoaded = true;
 	},
 	validateArchive(names) {
 		/*
