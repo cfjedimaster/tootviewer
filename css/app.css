@@ -2,8 +2,22 @@
 
 body {
   font-family: Arial;  
+  margin: 30px;
 }
 
 div#statusDiv {
 	font-style: italic;
 }
+
+table#messageTable {
+	border-collapse: collapse; 
+	border: 1px solid yellow; 
+	width: 100%; 
+}
+
+th, td { 
+	border: 1px solid yellow; 
+	padding: 5px;  
+} 
+
+ 

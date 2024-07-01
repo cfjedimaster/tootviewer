@@ -4,8 +4,14 @@ document.addEventListener('alpine:init', () => {
 	intro:true,
 	status:'',
 	actorData:null,
+	messageData:null,
+	formatter:null,
 	init() {
 		console.log('app init');
+		this.formatter = new Intl.DateTimeFormat('en-US', {dateStyle:'medium', timeStyle:'long'});
+	},
+	dateFormat(d) {
+		return this.formatter.format(new Date(d));
 	},
 	handleFile(e) {
 		/*
@@ -39,7 +45,7 @@ document.addEventListener('alpine:init', () => {
 		this.actorData = JSON.parse((await zipContents.files['actor.json'].async('text')));		
 		console.log('test', JSON.stringify(this.actorData,null,'\t'));
 
-		this.messageData = JSON.parse((await zipContents.files['outbox.json'].async('text')));
+		this.messageData = JSON.parse((await zipContents.files['outbox.json'].async('text'))).orderedItems;
 	},
 	validateArchive(names) {
 		/*

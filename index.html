@@ -40,6 +40,32 @@
 			</template>
 		</sl-card>
 
+		<template x-if="messageData">
+			<div>
+				<h3>Message Archive</h3>
+				<p>
+				Your archive contains <span x-text="messageData.length"></span> messages.
+				</p>
+
+				<table id="messageTable">
+					<thead>
+						<tr>
+						<th>Date</th>
+						<th>Content</th>
+						</tr>
+					</thead>
+					<tbody>
+						<template x-for="message in messageData">
+							<tr>
+								<td x-text="dateFormat(message.published)" style="white-space: nowrap"></td>
+								<td x-html="message.object.content"></td>
+							</tr>
+						</template>
+					</tbody>
+				</table>
+			</div>
+		</template>
+
 	</div>
 
 <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/shoelace-autoloader.js"></script>
