@@ -1,0 +1,50 @@
+<html>
+<head>
+	<link
+	rel="stylesheet"
+	media="(prefers-color-scheme:light)"
+	href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/light.css"
+	/>
+	<link
+	rel="stylesheet"
+	media="(prefers-color-scheme:dark)"
+	href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/dark.css"
+	onload="document.documentElement.classList.add('sl-theme-dark');"
+	/>
+	<link rel="stylesheet" href="/css/app.css">
+	<title>Toot Viewer</title>
+</head>
+
+<body>
+
+	<h2>Toot Viewer</h2>
+
+	<div x-data="app" x-cloak>
+		
+		<p x-show="intro">
+		To begin, either select your toot zip archive or drag and drop it here.<br>
+		<input type="file" value="Select Toot Archive" x-ref="selectFile" @change="handleFile">
+		</p>
+
+		<div id="statusDiv" x-text="status"></div>
+
+		<sl-card x-show="actorData">
+			<div slot="header" x-text="actorData?.name"></div>
+
+			<div x-html="actorData?.summary"></div>
+
+			<template x-for="attachment in actorData?.attachment">
+				<p>
+					<b><span x-text="attachment.name"></span>:</b> <span x-html="attachment.value"></span>
+				</p>
+			</template>
+		</sl-card>
+
+	</div>
+
+<script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/shoelace-autoloader.js"></script>
+<script src="/js/app.js" type="module"></script>
+<script src="/js/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</body>
+</html>
