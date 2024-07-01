@@ -1,9 +1,9 @@
 document.addEventListener('alpine:init', () => {
 
   Alpine.data('app', () => ({
-	intro:true,
 	status:'',
-	actorData:null,
+	actorDataLoaded:false,
+	actorData:{},
 	messageData:null,
 	formatter:null,
 	init() {
@@ -12,6 +12,21 @@ document.addEventListener('alpine:init', () => {
 	},
 	dateFormat(d) {
 		return this.formatter.format(new Date(d));
+	},
+	handleDrop(e) {
+		let droppedFiles = e.dataTransfer.files;
+		if(!droppedFiles) return;
+
+		let file = droppedFiles[0];
+		// repeat of logic below, but only 1 line, i'll deal for now
+		if(file.type !== 'application/zip' || !file.name.endsWith('.zip')) return;
+		this.loadZip(file);
+		//only work with file 1
+		/*
+		this.pdfFile = droppedFiles[0];
+		if(this.pdfFile.type !== 'application/pdf') return;
+		console.log('we got a pdf', this.pdfFile.name);
+		*/
 	},
 	handleFile(e) {
 		/*
@@ -42,7 +57,8 @@ document.addEventListener('alpine:init', () => {
 		this.status = '';
 
 		// read in actor and outbox for processing
-		this.actorData = JSON.parse((await zipContents.files['actor.json'].async('text')));		
+		this.actorData = JSON.parse((await zipContents.files['actor.json'].async('text')));	
+		this.actorDataLoaded = true;
 		console.log('test', JSON.stringify(this.actorData,null,'\t'));
 
 		this.messageData = JSON.parse((await zipContents.files['outbox.json'].async('text'))).orderedItems;

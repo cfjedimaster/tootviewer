@@ -19,25 +19,29 @@
 
 	<h2>Toot Viewer</h2>
 
-	<div x-data="app" x-cloak>
+	<div x-data="app" x-cloak @drop.prevent="handleDrop" @dragover.prevent>
 		
-		<p x-show="intro">
+		<p>
 		To begin, either select your toot zip archive or drag and drop it here.<br>
 		<input type="file" value="Select Toot Archive" x-ref="selectFile" @change="handleFile">
 		</p>
 
 		<div id="statusDiv" x-text="status"></div>
 
-		<sl-card x-show="actorData">
-			<div slot="header" x-text="actorData?.name"></div>
+		<sl-card x-show="actorDataLoaded">
+			<div slot="header"><span x-text="actorData.name"></span> (<span x-text="actorData.preferredUsername"></span>)</div>
 
-			<div x-html="actorData?.summary"></div>
+			<div x-html="actorData.summary"></div>
 
-			<template x-for="attachment in actorData?.attachment">
+			<template x-for="attachment in actorData.attachment">
 				<p>
 					<b><span x-text="attachment.name"></span>:</b> <span x-html="attachment.value"></span>
 				</p>
 			</template>
+
+			<div slot="footer">
+				<a :href="actorData.url" target="_new">View Profile</a> <sl-icon name="box-arrow-up-right"></sl-icon>
+			</div>
 		</sl-card>
 
 		<template x-if="messageData">

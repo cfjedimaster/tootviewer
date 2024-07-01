@@ -3,6 +3,7 @@
 body {
   font-family: Arial;  
   margin: 30px;
+  line-height: 1.8;
 }
 
 div#statusDiv {
