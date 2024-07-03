@@ -19,7 +19,7 @@
 
 	<h2>Toot Viewer</h2>
 
-	<div x-data="app" x-cloak @drop.prevent="handleDrop" @dragover.prevent>
+	<div x-data="app" x-cloak @drop.prevent="handleDrop" @dragover.prevent id="appDiv">
 		
 		<p>
 		To begin, either select your toot zip archive or drag and drop it here. Your information will be
@@ -51,10 +51,14 @@
 
 		<template x-if="messageDataLoaded">
 			<div>
-				<h3>Message Archive (<span x-text="messages.length"></span> messages)</h3>
-				<p>
-				<sl-input placeholder="Type to filter by text" x-model="textFilter"></sl-input>
-				</p>
+				<h3>Message Archive (<span x-text="messageData.length"></span> messages)</h3>
+				<div class="messageTools">
+					<div><sl-input placeholder="Type to filter by text" x-model="textFilter" clearable @sl-clear="textFilter=''"></sl-input></div>
+					<div class="paginationButtons">
+					<sl-button @click="prevPageMessages">Previous</sl-button>
+					<sl-button @click="nextPageMessages">Next</sl-button>
+					</div>
+				</div>
 
 				<table id="messageTable">
 					<thead>
@@ -65,7 +69,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<template x-for="message in messages">
+						<template x-for="message in messagesPaged">
 							<tr>
 								<td x-text="dateFormat(message.published)" style="white-space: nowrap"></td>
 								<td x-html="message.object.content"></td>

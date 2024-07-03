@@ -8,6 +8,8 @@ document.addEventListener('alpine:init', () => {
 	messageDataLoaded:false,
 	formatter:null,
 	textFilter:'',
+	perPageMessages:25,
+	pageMessages:1,
 	init() {
 		console.log('app init');
 		this.formatter = new Intl.DateTimeFormat('en-US', {dateStyle:'medium', timeStyle:'long'});
@@ -45,14 +47,52 @@ document.addEventListener('alpine:init', () => {
 	},
 	get messages() {
 		if(!this.messageData) return [];
-		if(this.textFilter === '') return this.messageData;
+		//if(this.textFilter === '') return this.messageData;
 		
+		/*
+		filter by text string, then by page. Because I'm worried the text comp is slowing things down, 
+		going to have 2 sets of code here. maybe
+
+		Ok, I ONLY filter by text, date later. We use another property for the pages
+
+		in case i revert:
+		let start = (this.pageMessages-1)*this.perPageMessages;
+		let end = this.pageMessages*this.perPageMessages;
+
+		return this.messageData.filter(x => {
+			if(this.textFilter !== '' && x.object && x.object.content) return x.object.content.toLowerCase().includes(this.textFilter.toLocaleLowerCase());
+			return true;
+		}).filter((row, index) => {
+          if(index >= start && index < end) return true;
+        });		
+
+		*/
+
+		/*
 		return this.messageData.filter(x => {
 			if(x.object && x.object.content) return x.object.content.toLowerCase().includes(this.textFilter.toLocaleLowerCase());
 			return true;
 		});
-		
-		//return this.messageData.filter(x => x?.object?.content.toLowerCase().includes(this.textFilter.toLocaleLowerCase()));
+
+		*/
+		if(this.textFilter === '') return this.messageData;
+		return this.messageData.filter(x => {
+			if(x.object && x.object.content) return x.object.content.toLowerCase().includes(this.textFilter.toLocaleLowerCase());
+			return true;
+		});
+
+	},
+	get messagesPaged() {
+		let start = (this.pageMessages-1)*this.perPageMessages;
+		let end = this.pageMessages*this.perPageMessages;
+
+		return this.messages.filter((row, index) => {
+          if(index >= start && index < end) return true;
+        });		
+
+	},
+	nextPageMessages() {
+		if((this.pageMessages * this.perPageMessages) < this.messages.length) this.pageMessages++;
 	},
 	handleFile(e) {
 		/*
@@ -99,6 +139,9 @@ document.addEventListener('alpine:init', () => {
 		localStorage.setItem('existingActor', JSON.stringify(this.actorData));
 		localStorage.setItem('existingMessages', JSON.stringify(this.messageData));
 	},
+    prevPageMessages() {
+      if(this.pageMessages > 1) this.pageMessages--;
+    },
 	validateArchive(names) {
 		/*
 		our 'rules' for valid archive are:

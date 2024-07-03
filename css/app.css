@@ -36,3 +36,17 @@ footer a {
 	color: black;
 }
 
+div#appDiv {
+  margin-bottom: 50px;
+}
+
+div.messageTools {
+  display: grid;
+  grid-template-columns: 1fr 200px;
+  column-gap: 10px;
+  margin-bottom: 10px;
+}
+
+div.paginationButtons {
+  justify-self: end;
+}
