@@ -22,8 +22,10 @@
 	<div x-data="app" x-cloak @drop.prevent="handleDrop" @dragover.prevent>
 		
 		<p>
-		To begin, either select your toot zip archive or drag and drop it here.<br>
+		To begin, either select your toot zip archive or drag and drop it here. Your information will be
+		cached in the browser (not the server) and can be cleared at will.<br>
 		<input type="file" value="Select Toot Archive" x-ref="selectFile" @change="handleFile">
+		<sl-button title="Will remove cache and reload to clear UI" @click="clearCache">Clear Cache</sl-button>
 		</p>
 
 		<div id="statusDiv" x-text="status"></div>

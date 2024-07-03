@@ -11,6 +11,14 @@ document.addEventListener('alpine:init', () => {
 	init() {
 		console.log('app init');
 		this.formatter = new Intl.DateTimeFormat('en-US', {dateStyle:'medium', timeStyle:'long'});
+
+		// Check for cached version
+		this.loadCache();
+	},
+	clearCache() {
+		localStorage.removeItem('existingActor');
+		localStorage.removeItem('existingMessages');
+		window.location.reload();
 	},
 	dateFormat(d) {
 		return this.formatter.format(new Date(d));
@@ -23,6 +31,17 @@ document.addEventListener('alpine:init', () => {
 		// repeat of logic below, but only 1 line, i'll deal for now
 		if(file.type !== 'application/zip' || !file.name.endsWith('.zip')) return;
 		this.loadZip(file);
+	},
+	loadCache() {
+		let existingActor = localStorage.getItem('existingActor');
+		let existingMessages = localStorage.getItem('existingMessages');
+		// only use cache if both
+		if(!existingActor || !existingMessages) return;
+		console.log('Cached version exists.');
+		this.actorData = JSON.parse(existingActor);
+		this.actorDataLoaded = true;
+		this.messageData = JSON.parse(existingMessages);
+		this.messageDataLoaded = true;
 	},
 	get messages() {
 		if(!this.messageData) return [];
@@ -75,6 +94,10 @@ document.addEventListener('alpine:init', () => {
 		this.messageData = JSON.parse((await zipContents.files['outbox.json'].async('text'))).orderedItems.filter(m => m.type === 'Create');
 
 		this.messageDataLoaded = true;
+
+		//cache it
+		localStorage.setItem('existingActor', JSON.stringify(this.actorData));
+		localStorage.setItem('existingMessages', JSON.stringify(this.messageData));
 	},
 	validateArchive(names) {
 		/*
