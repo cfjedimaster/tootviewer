@@ -61,6 +61,7 @@
 						<tr>
 						<th>Date</th>
 						<th>Content</th>
+						<th>&nbsp;</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -68,6 +69,7 @@
 							<tr>
 								<td x-text="dateFormat(message.published)" style="white-space: nowrap"></td>
 								<td x-html="message.object.content"></td>
+								<td><a :href="message.object.url" target="_new" title="View External"><sl-icon name="box-arrow-up-right"></sl-icon></a>
 							</tr>
 						</template>
 					</tbody>
